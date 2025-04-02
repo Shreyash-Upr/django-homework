@@ -23,17 +23,34 @@ class TeacherDetailView(DetailView):
 
 class TeacherCreateView(CreateView):
     model = Teacher
-    form_class = TeacherForm  # Changed 'model_form' to 'form_class'
+    form_class = TeacherForm  # Use form_class instead of model_form
     template_name = 'teacher/teacher_form.html'
     success_url = reverse_lazy('teacher-list')
 
 class TeacherUpdateView(UpdateView):
     model = Teacher
-    form_class = TeacherForm  # Changed 'model_form' to 'form_class'
+    form_class = TeacherForm  # Use form_class instead of model_form
     template_name = 'teacher/teacher_form.html'
     success_url = reverse_lazy('teacher-list')
 
+class TeacherDeleteView(DeleteView):  # Adding TeacherDeleteView
+    model = Teacher
+    template_name = 'teacher/teacher_confirm_delete.html'  # Make sure this template exists
+    success_url = reverse_lazy('teacher-list')
+
 # DASHBOARD
+
+class CourseCreateView(CreateView):
+    model = Course
+    form_class = CourseForm  # Use form_class instead of model_form
+    template_name = 'teacher/course_form.html'  # Ensure this template exists
+    success_url = reverse_lazy('course_list')
+
+class CourseListView(ListView):
+    model = Course
+    template_name = 'teacher/course_list.html'  # Ensure this template exists
+    context_object_name = 'courses'
+    ordering = ['name']  # Adjust ordering as needed
 
 def dashboard(request):
     context = {
@@ -43,4 +60,9 @@ def dashboard(request):
         "teachers": Teacher.objects.all()[:5],
         "enlistment_date": Teacher.objects.order_by('-enlistment_date')[:5],
     }
-    return render(request, 'dashboard.html', context)  
+    return render(request, 'dashboard.html', context)
+
+from django.shortcuts import render
+
+def home(request):
+    return render(request, 'home.html')  # You'll need to create a 'home.html' template
